@@ -10,5 +10,6 @@ public interface UserRepository {
 	
 	boolean verify(Long id);
 	boolean upDate(PasswordUpdate information, Long token);
+	UserInformation getUserById(Long id );
 
 }

@@ -81,6 +81,7 @@ public class ServiceImplementation implements Services {
 		if (user != null) {
 
 			if ((user.isVerified() == true) && encryption.matches(information.getPassword(), user.getPassword())) {
+				System.out.println(generate.jwtToken(user.getId()));
 				return true;
 			} else {
 				String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
