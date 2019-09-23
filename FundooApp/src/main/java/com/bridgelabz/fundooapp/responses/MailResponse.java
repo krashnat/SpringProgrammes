@@ -1,10 +1,12 @@
 package com.bridgelabz.fundooapp.responses;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MailResponse {
 	
-	String url;
-	String token;
-	public String formMessage(String url,String toke)
+
+	public String formMessage(String url,String token)
 	{
 		
 		return url+"/"+token;

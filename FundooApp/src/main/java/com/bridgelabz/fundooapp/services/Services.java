@@ -10,6 +10,16 @@ public interface Services {
 
 	boolean register(UserDto ionformation);
 	
-	boolean update(PasswordUpdate information);
+	
+
+	boolean verify(String token) throws Exception;
+	
+	boolean isUserExist(String email);
+
+	boolean update(PasswordUpdate information, String token);
+
+	
+
+	
 
 }
