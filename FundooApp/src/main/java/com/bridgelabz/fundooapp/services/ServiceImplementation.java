@@ -57,10 +57,10 @@ public class ServiceImplementation implements Services {
 			userInformation.setPassword(epassword);
 			userInformation.setVerified(false);
 			userInformation = repository.save(userInformation);
-			System.out.println("id" + " " + userInformation.getId());
-			System.out.println("token" + " " + generate.jwtToken(userInformation.getId()));
+			System.out.println("id" + " " + userInformation.getUserId());
+			System.out.println("token" + " " + generate.jwtToken(userInformation.getUserId()));
 			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
-					generate.jwtToken(userInformation.getId()));
+					generate.jwtToken(userInformation.getUserId()));
 
 			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 
@@ -81,11 +81,11 @@ public class ServiceImplementation implements Services {
 		if (user != null) {
 
 			if ((user.isVerified() == true) && encryption.matches(information.getPassword(), user.getPassword())) {
-				System.out.println(generate.jwtToken(user.getId()));
+				System.out.println(generate.jwtToken(user.getUserId()));
 				return true;
 			} else {
 				String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
-						generate.jwtToken(user.getId()));
+						generate.jwtToken(user.getUserId()));
 
 				MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 
@@ -144,7 +144,7 @@ public class ServiceImplementation implements Services {
 		UserInformation user = repository.getUser(email);
 		if (user != null && user.isVerified() == true) {
 			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
-					generate.jwtToken(user.getId()));
+					generate.jwtToken(user.getUserId()));
 			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 			return true;
 		}

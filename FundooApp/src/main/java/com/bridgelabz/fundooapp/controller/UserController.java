@@ -50,10 +50,9 @@ public class UserController {
 		boolean result = service.login(information);
 
 		if (result) {
-			HttpHeaders h = new HttpHeaders();
-			h.add("login", "successfully done");
 
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Login success", 200, information));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header("login", information.getUsername())
+					.body(new Response("Login success", 200, information));
 
 		} else {
 

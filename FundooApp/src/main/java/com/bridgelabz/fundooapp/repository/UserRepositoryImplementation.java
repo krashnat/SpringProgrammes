@@ -1,7 +1,6 @@
 package com.bridgelabz.fundooapp.repository;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -35,23 +34,21 @@ public class UserRepositoryImplementation implements UserRepository {
 
 		Query q = session.createQuery(" FROM UserInformation where email=:email");
 		q.setParameter("email", email);
-		
+
 		return (UserInformation) q.uniqueResult();
 
 	}
-	
+
 	@Override
 	public UserInformation getUserById(Long id) {
 		Session session = entityManager.unwrap(Session.class);
 
 		Query q = session.createQuery(" FROM UserInformation where id=:id");
 		q.setParameter("id", id);
-		
+
 		return (UserInformation) q.uniqueResult();
 
 	}
-	
-	
 
 	@Override
 

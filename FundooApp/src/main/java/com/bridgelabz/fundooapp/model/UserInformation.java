@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,9 +27,8 @@ import lombok.ToString;
 public class UserInformation {
 
 	@Id
-	
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long userId;
 	private String name;
 	private String email;
 	private String password;
@@ -37,6 +37,7 @@ public class UserInformation {
 	private boolean isVerified;
 	
 	  @OneToMany(cascade=CascadeType.ALL) 
+	  @JoinColumn(name="userId")
 	  private List<NoteInformation> note;
 	 
 	
