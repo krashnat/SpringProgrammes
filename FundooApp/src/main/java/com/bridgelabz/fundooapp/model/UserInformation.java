@@ -35,11 +35,9 @@ public class UserInformation {
 	private Long mobNo;
 	private LocalDateTime createdDate;
 	private boolean isVerified;
-	
-	  @OneToMany(cascade=CascadeType.ALL) 
-	  @JoinColumn(name="userId")
-	  private List<NoteInformation> note;
-	 
-	
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
+	private List<NoteInformation> note;
 
 }

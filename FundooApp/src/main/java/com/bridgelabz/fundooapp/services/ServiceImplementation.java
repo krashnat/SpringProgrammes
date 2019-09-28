@@ -1,6 +1,5 @@
 package com.bridgelabz.fundooapp.services;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bridgelabz.fundooapp.exception.UserException;
 import com.bridgelabz.fundooapp.model.LoginInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
@@ -108,20 +106,21 @@ public class ServiceImplementation implements Services {
 			try {
 				System.out.println( "in update method"+"   "+generate.parseJWT(token));
 				id = (long) generate.parseJWT(token);
-			} catch (JWTVerificationException e) {
-				
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
-				
-				e.printStackTrace();
+				return repository.upDate(information,id);
+			} 
+			catch (Exception e) {
+				throw new UserException("user is not valid");
 			}
-			return repository.upDate(information,id);
-		} else {
-			return false;
+				
+			}
+				
+				
+			
+		 else {
+			
 		}
+			return false;
+		
 
 	}
 
@@ -142,7 +141,7 @@ public class ServiceImplementation implements Services {
 	@Override
 	public boolean isUserExist(String email) {
 		UserInformation user = repository.getUser(email);
-		if (user != null && user.isVerified() == true) {
+		if (user != null && user.isVerified()) {
 			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
 					generate.jwtToken(user.getUserId()));
 			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);

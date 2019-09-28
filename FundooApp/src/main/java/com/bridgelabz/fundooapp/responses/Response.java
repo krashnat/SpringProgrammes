@@ -9,6 +9,8 @@ public class Response {
 
 	private String message;
 	private int statusCode;
+	private Object obj;
+	
 	
 	public Response(String message, int statusCode) {
 		this.message = message;
@@ -19,8 +21,10 @@ public class Response {
 	public Response(String message, int statusCode, Object obj) {
 		this.message = message;
 		this.statusCode = statusCode;
+		this.obj=obj;
 		
 
 	}
+	
 
 }

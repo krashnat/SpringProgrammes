@@ -1,6 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundooapp.exception.UserException;
-import com.bridgelabz.fundooapp.model.Note;
+import com.bridgelabz.fundooapp.model.NoteUpdation;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
 import com.bridgelabz.fundooapp.model.UserInformation;
@@ -40,7 +41,7 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public boolean createNote(NoteDto information, String token) {
+	public void createNote(NoteDto information, String token) {
 		try {
 			System.out.println("in service");
 			Long userid = (long) tokenGenerator.parseJWT(token);
@@ -56,55 +57,86 @@ public class NoteServiceImplementation implements NoteService {
 				noteinformation.setTrashed(false);
 				user.getNote().add(noteinformation);
 				noteRepository.save(noteinformation);
-				return true;
+
 			} else {
-				return false;
+				throw new UserException("note is not present with the given id ");
 			}
 
 		} catch (Exception e) {
-			throw new UserException("the given id is not present");
+
+			throw new UserException("user is not present with the given id ");
 		}
 
 	}
 
 	@Transactional
 	@Override
-	public boolean updateNote(Note information, String token) {
+	public void updateNote(NoteUpdation information, String token) {
 		try {
-			long id = (long) tokenGenerator.parseJWT(token);
+			Long userid = (long) tokenGenerator.parseJWT(token);
+			System.out.println("inside note service" + userid);
 
-			NoteInformation note=noteRepository.findById(information.getId());
-            note.setId(information.getId());
-			note.setDescription(information.getDescription());
-			note.setTitle(information.getTitle());
-			note.setPinned(information.isPinned());
-			note.setArchieved(information.isArchieved());
-			note.setUpDateAndTime(LocalDateTime.now());
-			noteRepository.save(note);
-			return true;
+			user = repository.getUserById(userid);
+
+			NoteInformation note = noteRepository.findById(information.getId());
+			if (note != null) {
+				System.out.println("note is   " + note);
+				note.setId(information.getId());
+				note.setDescription(information.getDescription());
+				note.setTitle(information.getTitle());
+				note.setPinned(information.isPinned());
+				note.setArchieved(information.isArchieved());
+				note.setArchieved(information.isTrashed());
+				note.setUpDateAndTime(LocalDateTime.now());
+				noteRepository.save(note);
+			} else {
+				throw new UserException("note is not present");
+			}
 
 		} catch (Exception e) {
-			throw new UserException("the given id is not present");
+			throw new UserException("user is not present");
 		}
 
 	}
-	
-	
+
 	@Transactional
 	@Override
-	public boolean deleteNote(Note information,String token)
-	{
-		NoteInformation note =noteRepository.findById(information.getId());
+	public void deleteNote(NoteUpdation information, String token) {
+		NoteInformation note = noteRepository.findById(information.getId());
 		note.setTrashed(true);
 		noteRepository.save(note);
-		return true;
+
 	}
+
 	
-	
-	
-	
-	
-	
+	@Override
+	public List<NoteInformation> getAllNotes(String token) {
+		try {
+			Long userId = (long) tokenGenerator.parseJWT(token);
+			user = repository.getUserById(userId);
+			
+			if(user!=null)
+			{
+				System.out.println(user);
+			     List<NoteInformation> list=noteRepository.getNotes(userId);
+			     System.out.println("note fetched is"+" "+list.get(0));
+			     return list;
+			
+			}
+			else
+			{
+				System.out.println(user+"hello");
+				throw new UserException("note is not  present");
+			}
+			
+		} catch (Exception e) {
+			throw new UserException("exception occured");
+		}
+		
+
+		
+	}
+
 	/*
 	 * NoteInformation updatedNotes =
 	 * noteRepository.findById(information.getId()).map(currentNote -> {
@@ -115,7 +147,6 @@ public class NoteServiceImplementation implements NoteService {
 	 * return currentNote; }).orElseThrow(() -> new
 	 * UserException("note not present"));
 	 */
-	//noteRepository.save(updatedNotes);
-
+	// noteRepository.save(updatedNotes);
 
 }
