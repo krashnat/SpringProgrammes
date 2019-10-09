@@ -56,7 +56,7 @@ public class UserRepositoryImplementation implements UserRepository {
 		Session session = entityManager.unwrap(Session.class);
 
 		Query q = session.createQuery("update UserInformation set password=:p" + " " + " " + "where id=:i");
-		q.setParameter("p", information.getNewPassword());
+		q.setParameter("p", information.getConfirmPassword());
 		q.setParameter("i", id);
 
 		int status = q.executeUpdate();

@@ -3,14 +3,19 @@ package com.bridgelabz.fundooapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundooapp.model.LabelDto;
 import com.bridgelabz.fundooapp.model.LabelInformation;
+import com.bridgelabz.fundooapp.model.LabelUpdate;
 import com.bridgelabz.fundooapp.responses.Response;
 import com.bridgelabz.fundooapp.services.LabelService;
 
@@ -29,8 +34,37 @@ public class LabelController {
 	}
 
 	@PostMapping("/addlabel")
-	public void addLabel(@RequestBody LabelInformation label, @RequestHeader("token") String token) {
+	public ResponseEntity<Response> addLabel(@RequestParam("labelId") Long labelId, @RequestHeader("token") String token,@RequestParam("noteId") Long noteId) {
+		System.out.println(labelId);
+		service.addLabel(labelId, noteId, token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("label added to", 200));
 		
 		
 	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<Response> updateLabel(@RequestBody LabelUpdate labelInfo,@RequestHeader("token") String token)
+	{
+		
+		service.editLabel(labelInfo, token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("label update", 200,labelInfo));
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<Response> delete(@RequestBody LabelUpdate labelInfo,@RequestHeader("token") String token)
+	{
+		service.deleteLabel(labelInfo, token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("label deleted", 200,labelInfo));
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.springframework.stereotype.Component;
@@ -20,16 +21,16 @@ import lombok.Setter;
 @Getter
 @Entity
 public class LabelInformation {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int labelId;
 	private String name;
 	private long userId;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "labelId")
+	@JoinTable(name = "Label_Note", joinColumns = { @JoinColumn(name = "label_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "note_id") })
 	private List<NoteInformation> list;
-	
 
 }

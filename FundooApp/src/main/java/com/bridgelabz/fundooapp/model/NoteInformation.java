@@ -22,9 +22,8 @@ import lombok.ToString;
 @Getter
 @Entity
 @Component
-@ToString
+//@ToString
 public class NoteInformation {
-	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,9 +35,10 @@ public class NoteInformation {
 	private boolean isTrashed;
 	private LocalDateTime createdDateAndTime;
 	private LocalDateTime upDateAndTime;
+
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "id")
+	@JoinTable(name = "Label_Note", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "label_id") })
 	private List<LabelInformation> list;
-	
-	
+
 }

@@ -16,7 +16,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler
        
     	Response response=new Response(ex.getMessage(),400);
       
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 	
 }

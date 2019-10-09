@@ -10,9 +10,12 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+
+import com.bridgelabz.fundooapp.responses.MailObject;
 
 @Component
 public class MailServiceProvider {
@@ -53,4 +56,37 @@ public class MailServiceProvider {
 
 		}
 	}
+	
+	@RabbitListener(queues = "rmq.rube.queue")
+	public void recievedMessage(MailObject employee) {
+		
+		
+		sendEmail(employee.getEmail(),employee.getSubject(),employee.getMessage());
+		System.out.println("Recieved Message From RabbitMQ: " + employee);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * public void sendMail(MailObject object) {
+	 * MailServiceProvider.sendEmail(object.getEmail(), object.getSubject(),
+	 * object.getMessage());
+	 * 
+	 * 
+	 * }
+	 */
+	
+	
+	
+	
+	
+	
 }

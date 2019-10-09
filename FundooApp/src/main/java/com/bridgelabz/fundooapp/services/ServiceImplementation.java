@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundooapp.configure.RabbitMQSender;
 import com.bridgelabz.fundooapp.exception.UserException;
 import com.bridgelabz.fundooapp.model.LoginInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
 import com.bridgelabz.fundooapp.model.UserDto;
 import com.bridgelabz.fundooapp.model.UserInformation;
 import com.bridgelabz.fundooapp.repository.UserRepository;
+import com.bridgelabz.fundooapp.responses.MailObject;
 import com.bridgelabz.fundooapp.responses.MailResponse;
 import com.bridgelabz.fundooapp.util.JwtGenerator;
 import com.bridgelabz.fundooapp.util.MailServiceProvider;
@@ -39,6 +41,13 @@ public class ServiceImplementation implements Services {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private MailObject mailObject;
+	
+	@Autowired
+	private RabbitMQSender rabbitMQSender;
+	
 
 	@Transactional
 	@Override
@@ -60,8 +69,13 @@ public class ServiceImplementation implements Services {
 			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
 					generate.jwtToken(userInformation.getUserId()));
 
-			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
-
+			
+			
+			mailObject.setEmail("krashnat.cdr869@gmail.com");
+			mailObject.setMessage(mailResponse);
+			mailObject.setSubject("verification");
+			//MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
+           rabbitMQSender.send(mailObject);
 			return true;
 
 		} else {
@@ -106,6 +120,8 @@ public class ServiceImplementation implements Services {
 			try {
 				System.out.println( "in update method"+"   "+generate.parseJWT(token));
 				id = (long) generate.parseJWT(token);
+				String epassword = encryption.encode(information.getConfirmPassword());
+				information.setConfirmPassword(epassword);
 				return repository.upDate(information,id);
 			} 
 			catch (Exception e) {
@@ -117,9 +133,9 @@ public class ServiceImplementation implements Services {
 				
 			
 		 else {
-			
+			throw new UserException("password not matches");
 		}
-			return false;
+			
 		
 
 	}
@@ -142,7 +158,7 @@ public class ServiceImplementation implements Services {
 	public boolean isUserExist(String email) {
 		UserInformation user = repository.getUser(email);
 		if (user != null && user.isVerified()) {
-			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
+			String mailResponse = response.formMessage("http://localhost:4200/updatePassword",
 					generate.jwtToken(user.getUserId()));
 			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 			return true;
