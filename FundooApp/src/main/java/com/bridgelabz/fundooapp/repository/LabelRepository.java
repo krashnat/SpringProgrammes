@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooapp.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
@@ -37,7 +39,7 @@ public class LabelRepository {
 		Query q = session.createQuery("from LabelInformation where user_id=:id and name=:name");
 		q.setParameter("id", userid);
 		q.setParameter("name", labelname);
-		return (LabelInformation) q.uniqueResult();
+		return (LabelInformation) q.uniqueResult(); 
 
 	}
 
@@ -58,6 +60,17 @@ public class LabelRepository {
 		query.setParameter("id", i);
 		int result = query.executeUpdate();
 		return result;
+	}
+	
+	public List<LabelInformation> getAllLabel(Long id)
+	{
+		String hql = "FROM LabelInformation " + "WHERE user_id=:id";
+		Session session = entityManager.unwrap(Session.class);
+		//Query query = session.createQuery(hql);
+		return session.createQuery("from LabelInformation where user_Id='"+id+"'").getResultList();
+		/*
+		 * query.setParameter("id", id); return query.getResultList();
+		 */
 	}
 
 }

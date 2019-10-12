@@ -87,25 +87,25 @@ public class ServiceImplementation implements Services {
 
 	@Transactional
 	@Override
-	public boolean login(LoginInformation information) {
+	public UserInformation login(LoginInformation information) {
 		UserInformation user = repository.getUser(information.getUsername());
 		System.out.println("inside service " + user);
 		if (user != null) {
 
 			if ((user.isVerified() == true) && encryption.matches(information.getPassword(), user.getPassword())) {
 				System.out.println(generate.jwtToken(user.getUserId()));
-				return true;
+				return user;
 			} else {
 				String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
 						generate.jwtToken(user.getUserId()));
 
 				MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 
-				return false;
+				return null;
 			}
 
 		} else {
-			return false;
+			return null;
 			
 		}
 

@@ -1,7 +1,6 @@
 package com.bridgelabz.fundooapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bridgelabz.fundooapp.model.Email;
 import com.bridgelabz.fundooapp.model.LoginInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
 import com.bridgelabz.fundooapp.model.UserDto;
+import com.bridgelabz.fundooapp.model.UserInformation;
 import com.bridgelabz.fundooapp.responses.Response;
+import com.bridgelabz.fundooapp.responses.UsersDetail;
 import com.bridgelabz.fundooapp.services.Services;
+import com.bridgelabz.fundooapp.util.JwtGenerator;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -28,18 +29,23 @@ public class UserController {
 
 	@Autowired
 	private Services service;
+	
+	@Autowired
+	private JwtGenerator generate;
+	
+	
 
 	@PostMapping("/registration")
 	public ResponseEntity<Response> registration(@RequestBody UserDto information) {
 
 		boolean result = service.register(information);
 		if (result) {
-
+			
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new Response("registration success", 200, information));
 
 		} else {
-
+                   
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
 					.body(new Response("user already exist", 400, information));
 
@@ -48,18 +54,18 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<Response> login(@RequestBody LoginInformation information) {
+	public ResponseEntity<UsersDetail> login(@RequestBody LoginInformation information) {
 		System.out.println("inside controller");
-		boolean result = service.login(information);
+		UserInformation userInformation = service.login(information);
 
-		if (result) {
-
+		if (userInformation!=null) {
+			String token=generate.jwtToken(userInformation.getUserId());
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("login", information.getUsername())
-					.body(new Response("Login success", 200, information));
+					.body(new UsersDetail(token, 200, information));
 
 		} else {
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Login fail", 400, information));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UsersDetail("Login fail", 400, information));
 		}
 
 	}

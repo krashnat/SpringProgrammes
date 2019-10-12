@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -15,7 +17,6 @@ import com.bridgelabz.fundooapp.model.UserInformation;
 import com.bridgelabz.fundooapp.repository.LabelRepository;
 import com.bridgelabz.fundooapp.repository.NoteRepository;
 import com.bridgelabz.fundooapp.repository.UserRepository;
-import com.bridgelabz.fundooapp.responses.NoteResponse;
 import com.bridgelabz.fundooapp.util.JwtGenerator;
 
 @Service
@@ -130,6 +131,19 @@ public class LabelServiceImplementation implements LabelService {
 			}
 		}
 
+	}
+
+	@Override
+	public List<LabelInformation> getLabel(Long id) {
+		/*
+		 * Long id; try { id = (long) tokenGenerator.parseJWT(token); } catch (Exception
+		 * e) {
+		 * 
+		 * throw new UserException("note not present "); }
+		 */
+		List<LabelInformation> labels=repository.getAllLabel(id);
+		return labels;
+		
 	}
 
 }

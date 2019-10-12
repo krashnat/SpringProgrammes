@@ -12,7 +12,9 @@ public class Response {
 	private Object obj;
 	
 	
+	
 	public Response(String message, int statusCode) {
+		
 		this.message = message;
 		this.statusCode = statusCode;
 
