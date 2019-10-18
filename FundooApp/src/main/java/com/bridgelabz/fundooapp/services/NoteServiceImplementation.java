@@ -101,42 +101,103 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public void deleteNote(NoteUpdation information, String token) {
-		NoteInformation note = noteRepository.findById(information.getId());
-		note.setTrashed(true);
+	public void deleteNote(long id, String token) {
+		NoteInformation note = noteRepository.findById(id);
+		//note.setTrashed(true);
+		note.setTrashed(!note.isTrashed());
+		noteRepository.save(note);
+
+	}
+	@Transactional
+	@Override
+	public void archievNote(long id, String token) {
+		NoteInformation note = noteRepository.findById(id);
+		//note.setTrashed(true);
+		note.setArchieved(!note.isArchieved());
 		noteRepository.save(note);
 
 	}
 
-	
+	@Transactional
+	@Override
+	public boolean deleteNotePemenetly(long id, String token) {
+		NoteInformation note = noteRepository.findById(id);
+		if (note != null) {
+			return noteRepository.deleteNote(id);
+		} else {
+			throw new UserException("note is not present");
+		}
+
+	}
+
 	@Override
 	public List<NoteInformation> getAllNotes(String token) {
 		try {
 			Long userId = (long) tokenGenerator.parseJWT(token);
 			user = repository.getUserById(userId);
-			
-			if(user!=null)
-			{
+
+			if (user != null) {
 				System.out.println(user);
-			     List<NoteInformation> list=noteRepository.getNotes(userId);
-			     System.out.println("note fetched is"+" "+list.get(0));
-			     return list;
-			
-			}
-			else
-			{
-				System.out.println(user+"hello");
+				List<NoteInformation> list = noteRepository.getNotes(userId);
+				System.out.println("note fetched is" + " " + list.get(0));
+				return list;
+
+			} else {
+				System.out.println(user + "hello");
 				throw new UserException("note is not  present");
 			}
-			
+
 		} catch (Exception e) {
 			throw new UserException("exception occured");
 		}
-		
 
-		
 	}
 
+	@Override
+	public List<NoteInformation> getTrashedNotes(String token) {
+		try {
+			Long userId = (long) tokenGenerator.parseJWT(token);
+			user = repository.getUserById(userId);
+
+			if (user != null) {
+				System.out.println(user);
+				List<NoteInformation> list = noteRepository.getTrashedNotes(userId);
+				System.out.println("note fetched is" + " " + list.get(0));
+				return list;
+
+			} else {
+				System.out.println(user + "hello");
+				throw new UserException("note is not  present");
+			}
+
+		} catch (Exception e) {
+			throw new UserException("exception occured");
+		}
+
+	}
+	
+	@Override
+	public List<NoteInformation> getArchiveNote(String token) {
+		try {
+			Long userId = (long) tokenGenerator.parseJWT(token);
+			user = repository.getUserById(userId);
+
+			if (user != null) {
+				System.out.println(user);
+				List<NoteInformation> list = noteRepository.getArchiveNotes(userId);
+				System.out.println("note fetched is" + " " + list.get(0));
+				return list;
+
+			} else {
+				System.out.println(user + "hello");
+				throw new UserException("note is not  present");
+			}
+
+		} catch (Exception e) {
+			throw new UserException("exception occured");
+		}
+
+	}
 	/*
 	 * NoteInformation updatedNotes =
 	 * noteRepository.findById(information.getId()).map(currentNote -> {

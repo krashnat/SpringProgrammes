@@ -28,29 +28,58 @@ public class NoteRepository {
 
 	}
 
-	public NoteInformation findById(long id)
-	{
+	public NoteInformation findById(long id) {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
-		Query q=session.createQuery("from NoteInformation where id=:id ");
+		Query q = session.createQuery("from NoteInformation where id=:id ");
 		q.setParameter("id", id);
-		return (NoteInformation)q.uniqueResult();
-		
-		
+		return (NoteInformation) q.uniqueResult();
+
 	}
-	
+
+	public boolean deleteNote(long id) {
+		Session session = entityManager.unwrap(Session.class);
+		String hql = "DELETE FROM NoteInformation " + "WHERE id = :id";
+		Query query = session.createQuery(hql);
+		query.setParameter("id", id);
+		int result = query.executeUpdate();
+		if (result >= 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<NoteInformation> getNotes(long userid)
-	{
+	public List<NoteInformation> getNotes(long userid) {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
-	//	Query q=session.createQuery("from NoteInformation where user_id=:userid ");
-		return session.createQuery("from NoteInformation where user_Id='"+userid+"'").getResultList();
-		/*q.setParameter("id", userid);
-		return (List<NoteInformation>) q.list();*/
-		
-		
+
+		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_trashed=false and is_archieved=false")
+				.getResultList();
+
+	}
+
+	@Transactional
+	public List<NoteInformation> getTrashedNotes(long userid) {
+		System.out.println("in repository");
+		Session session = entityManager.unwrap(Session.class);
+
+		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_trashed=true")
+				.getResultList();
+
+	}
+	
+
+	@Transactional
+	public List<NoteInformation> getArchiveNotes(long userid) {
+		System.out.println("in repository");
+		Session session = entityManager.unwrap(Session.class);
+
+		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_archieved=true")
+				.getResultList();
+
 	}
 
 }

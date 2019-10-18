@@ -13,7 +13,15 @@ public interface NoteService {
 
 	void updateNote(NoteUpdation information, String token);
 
-	void deleteNote(NoteUpdation information, String token);
+	void deleteNote(long id, String token);
 
 	List<NoteInformation> getAllNotes(String token);
+
+	List<NoteInformation> getTrashedNotes(String token);
+
+	boolean deleteNotePemenetly(long id, String token);
+
+	void archievNote(long id, String token);
+
+	List<NoteInformation> getArchiveNote(String token);
 }
