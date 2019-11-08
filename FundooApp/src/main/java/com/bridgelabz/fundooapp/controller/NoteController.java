@@ -22,7 +22,7 @@ import com.bridgelabz.fundooapp.model.NoteUpdation;
 import com.bridgelabz.fundooapp.responses.Response;
 import com.bridgelabz.fundooapp.services.NoteService;
 
-@CrossOrigin(origins = "http://localhost:4200", exposedHeaders = { "token" })
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = { "token" })
 @RestController
 @RequestMapping("/note")
 public class NoteController {
@@ -36,7 +36,7 @@ public class NoteController {
 		System.out.println(information.getDescription());
 		service.createNote(information, token);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("registration success", 200, information));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("note creaqted", 200, information));
 
 	}
 
@@ -46,8 +46,8 @@ public class NoteController {
 		service.updateNote(note, token);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("note updated", 200));
-
 	}
+	
 	@PostMapping("/archieve/{id}")
 	public ResponseEntity<Response> archieve(@PathVariable long id, @RequestHeader("token") String token) {
 		System.out.println("inside delete controller" + id);

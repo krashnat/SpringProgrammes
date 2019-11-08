@@ -1,5 +1,6 @@
 package com.bridgelabz.fundooapp.services;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,8 +10,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bridgelabz.fundooapp.exception.UserException;
 import com.bridgelabz.fundooapp.model.NoteUpdation;
+import com.bridgelabz.fundooapp.model.LabelInformation;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
 import com.bridgelabz.fundooapp.model.UserInformation;
@@ -102,17 +105,19 @@ public class NoteServiceImplementation implements NoteService {
 	@Transactional
 	@Override
 	public void deleteNote(long id, String token) {
+
 		NoteInformation note = noteRepository.findById(id);
-		//note.setTrashed(true);
+		// note.setTrashed(true);
 		note.setTrashed(!note.isTrashed());
 		noteRepository.save(note);
 
 	}
+
 	@Transactional
 	@Override
 	public void archievNote(long id, String token) {
 		NoteInformation note = noteRepository.findById(id);
-		//note.setTrashed(true);
+		// note.setTrashed(true);
 		note.setArchieved(!note.isArchieved());
 		noteRepository.save(note);
 
@@ -121,12 +126,24 @@ public class NoteServiceImplementation implements NoteService {
 	@Transactional
 	@Override
 	public boolean deleteNotePemenetly(long id, String token) {
-		NoteInformation note = noteRepository.findById(id);
-		if (note != null) {
-			return noteRepository.deleteNote(id);
-		} else {
-			throw new UserException("note is not present");
+		try {
+			Long userid = (long) tokenGenerator.parseJWT(token);
+                System.out.println("user id"+" " +userid);
+			NoteInformation note = noteRepository.findById(id);
+			if (note != null) {
+		            List<LabelInformation> labels=note.getList();
+		            labels.clear();
+			   noteRepository.deleteNote(id, userid);
+			} else {
+				throw new UserException("note is not present");
+			}
+
 		}
+
+		catch (Exception e) {
+			throw new UserException("user is not present");
+		}
+		return false;
 
 	}
 
@@ -140,6 +157,7 @@ public class NoteServiceImplementation implements NoteService {
 				System.out.println(user);
 				List<NoteInformation> list = noteRepository.getNotes(userId);
 				System.out.println("note fetched is" + " " + list.get(0));
+				System.out.println("labels of notes"+list.get(0).getList());
 				return list;
 
 			} else {
@@ -175,7 +193,7 @@ public class NoteServiceImplementation implements NoteService {
 		}
 
 	}
-	
+
 	@Override
 	public List<NoteInformation> getArchiveNote(String token) {
 		try {

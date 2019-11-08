@@ -81,6 +81,19 @@ public class LabelServiceImplementation implements LabelService {
 		repository.save(label);
 	}
 
+	
+
+	@Transactional
+	@Override
+	public void removeLabel(Long labelId, Long noteId, String token) {
+		NoteInformation note = noteRepository.findById(noteId);
+		LabelInformation label = repository.fetchLabelById(labelId);
+		note.getList().remove(label);
+		
+		noteRepository.save(note);
+	}
+
+	
 	@Transactional
 	@Override
 	public void editLabel(LabelUpdate label, String token) {
@@ -134,16 +147,28 @@ public class LabelServiceImplementation implements LabelService {
 	}
 
 	@Override
-	public List<LabelInformation> getLabel(Long id) {
-		/*
-		 * Long id; try { id = (long) tokenGenerator.parseJWT(token); } catch (Exception
-		 * e) {
-		 * 
-		 * throw new UserException("note not present "); }
-		 */
-		List<LabelInformation> labels=repository.getAllLabel(id);
+	public List<LabelInformation> getLabel(String token) {
+
+		Long id;
+		try {
+			id = (long) tokenGenerator.parseJWT(token);
+		} catch (Exception e) {
+
+			throw new UserException("note not present ");
+		}
+
+		List<LabelInformation> labels = repository.getAllLabel(id);
 		return labels;
+
+	}
+
+	@Override
+	public List<NoteInformation> getAllNotes(String token, Long labelId) {
+		LabelInformation label=repository.getLabel(labelId);
+		List<NoteInformation> list=label.getList();
+		System.out.println("label is"+list);
 		
+		return list;
 	}
 
 }

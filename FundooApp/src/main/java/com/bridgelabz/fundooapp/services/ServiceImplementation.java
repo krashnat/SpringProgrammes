@@ -15,6 +15,7 @@ import com.bridgelabz.fundooapp.model.LoginInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
 import com.bridgelabz.fundooapp.model.UserDto;
 import com.bridgelabz.fundooapp.model.UserInformation;
+import com.bridgelabz.fundooapp.reddisrepository.ReddisRepository;
 import com.bridgelabz.fundooapp.repository.UserRepository;
 import com.bridgelabz.fundooapp.responses.MailObject;
 import com.bridgelabz.fundooapp.responses.MailResponse;
@@ -41,13 +42,15 @@ public class ServiceImplementation implements Services {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MailObject mailObject;
-	
+
 	@Autowired
 	private RabbitMQSender rabbitMQSender;
 	
+	@Autowired
+	private ReddisRepository reddisRepository;
 
 	@Transactional
 	@Override
@@ -64,23 +67,22 @@ public class ServiceImplementation implements Services {
 			userInformation.setPassword(epassword);
 			userInformation.setVerified(false);
 			userInformation = repository.save(userInformation);
+			//reddisRepository.save(userInformation);
 			System.out.println("id" + " " + userInformation.getUserId());
 			System.out.println("token" + " " + generate.jwtToken(userInformation.getUserId()));
-			String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
+			String mailResponse = response.formMessage("http://localhost:3000/verify",
 					generate.jwtToken(userInformation.getUserId()));
 
-			
-			
 			mailObject.setEmail("krashnat.cdr869@gmail.com");
 			mailObject.setMessage(mailResponse);
 			mailObject.setSubject("verification");
-			//MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
-           rabbitMQSender.send(mailObject);
+			
+			rabbitMQSender.send(mailObject);
 			return true;
 
 		} else {
 			throw new UserException("user already present");
-			
+
 		}
 
 	}
@@ -96,7 +98,7 @@ public class ServiceImplementation implements Services {
 				System.out.println(generate.jwtToken(user.getUserId()));
 				return user;
 			} else {
-				String mailResponse = response.formMessage("http://localhost:8080/fundooapp/verify",
+				String mailResponse = response.formMessage("http://localhost:3000/verify",
 						generate.jwtToken(user.getUserId()));
 
 				MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
@@ -106,37 +108,32 @@ public class ServiceImplementation implements Services {
 
 		} else {
 			return null;
-			
+
 		}
 
 	}
 
 	@Transactional
 	@Override
-	public boolean update(PasswordUpdate information,String token) {
+	public boolean update(PasswordUpdate information, String token) {
 		if (information.getNewPassword().equals(information.getConfirmPassword())) {
-			
+
 			Long id = null;
 			try {
-				System.out.println( "in update method"+"   "+generate.parseJWT(token));
+				System.out.println("in update method" + "   " + generate.parseJWT(token));
 				id = (long) generate.parseJWT(token);
 				String epassword = encryption.encode(information.getConfirmPassword());
 				information.setConfirmPassword(epassword);
-				return repository.upDate(information,id);
-			} 
-			catch (Exception e) {
+				return repository.upDate(information, id);
+			} catch (Exception e) {
 				throw new UserException("user is not valid");
 			}
-				
-			}
-				
-				
-			
-		 else {
+
+		}
+
+		else {
 			throw new UserException("password not matches");
 		}
-			
-		
 
 	}
 
@@ -156,20 +153,56 @@ public class ServiceImplementation implements Services {
 
 	@Override
 	public boolean isUserExist(String email) {
-		UserInformation user = repository.getUser(email);
-		if (user != null && user.isVerified()) {
-			String mailResponse = response.formMessage("http://localhost:4200/updatePassword",
+		try {
+			UserInformation user = repository.getUser(email);
+			if(user.isVerified() == true) {
+			String mailResponse = response.formMessage("http://localhost:3000/updatePassword",
 					generate.jwtToken(user.getUserId()));
 			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
 			return true;
+			}
+			else {
+				return false;
+			}
+		} catch (Exception e) {
+			throw new UserException("User not exist");
 		}
-		else
-		{
-			return false;
-		}
-
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification",
+					// mailResponse);
+
+//		System.out.println("in service"+user.getEmail());
+//		if (user != null) {
+//			String mailResponse = response.formMessage("http://localhost:3000/updatePassword",
+//					generate.jwtToken(user.getUserId()));
+//			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
+//			return true;
+//		}
+//		else
+//		{
+//			return false;
+//		}
+
 	}
 
-	
 }

@@ -37,13 +37,14 @@ public class NoteRepository {
 
 	}
 
-	public boolean deleteNote(long id) {
+	public boolean deleteNote(long id,long userid) {
 		Session session = entityManager.unwrap(Session.class);
-		String hql = "DELETE FROM NoteInformation " + "WHERE id = :id";
+		String hql = "DELETE FROM NoteInformation " + "WHERE id = :id" ;
 		Query query = session.createQuery(hql);
 		query.setParameter("id", id);
+//		query.setParameter("userid", userid);
 		int result = query.executeUpdate();
-		if (result >= 1) {
+		if (result >= 1) { 
 			return true;
 		} else {
 			return false;
@@ -77,7 +78,7 @@ public class NoteRepository {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
 
-		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_archieved=true")
+		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_archieved=true" + " and is_trashed=false")
 				.getResultList();
 
 	}

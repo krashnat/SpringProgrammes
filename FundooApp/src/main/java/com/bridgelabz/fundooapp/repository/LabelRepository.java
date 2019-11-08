@@ -72,5 +72,18 @@ public class LabelRepository {
 		 * query.setParameter("id", id); return query.getResultList();
 		 */
 	}
+	
+	public LabelInformation getLabel(Long id)
+	{
+		String hql = "FROM LabelInformation " + "WHERE label_id=:id";
+		Session session = entityManager.unwrap(Session.class);
+		//Query query = session.createQuery(hql);
+		return (LabelInformation) session.createQuery("from LabelInformation where label_id='"+id+"'").uniqueResult();
+		/*
+		 * query.setParameter("id", id); return query.getResultList();
+		 */
+	}
+	
+	
 
 }

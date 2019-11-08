@@ -13,13 +13,18 @@ import javax.persistence.ManyToMany;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Component
 @Setter
 @Getter
 @Entity
+@ToString
+
 public class LabelInformation {
 
 	@Id
@@ -31,6 +36,7 @@ public class LabelInformation {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "Label_Note", joinColumns = { @JoinColumn(name = "label_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "note_id") })
+	@JsonBackReference
 	private List<NoteInformation> list;
 
 }

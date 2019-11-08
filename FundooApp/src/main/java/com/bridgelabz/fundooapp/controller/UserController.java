@@ -22,7 +22,7 @@ import com.bridgelabz.fundooapp.responses.UsersDetail;
 import com.bridgelabz.fundooapp.services.Services;
 import com.bridgelabz.fundooapp.util.JwtGenerator;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/fundooapp")
 public class UserController {
@@ -71,14 +71,14 @@ public class UserController {
 	}
 
 	@GetMapping("/verify/{token}")
-	public String userVerification(@PathVariable("token") String token) throws Exception {
+	public ResponseEntity<Response> userVerification(@PathVariable("token") String token) throws Exception {
 
 		System.out.println("token for verification" + token);
 		boolean update = service.verify(token);
 		if (update) {
-			return "verified";
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified", 200));
 		} else {
-			return "register again";
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified", 400));
 
 		}
 
@@ -92,7 +92,7 @@ public class UserController {
 		if (result) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("user exist", 200));
 		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("user not exist", 400));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("user not exist", 400));
 		}
 
 	}
