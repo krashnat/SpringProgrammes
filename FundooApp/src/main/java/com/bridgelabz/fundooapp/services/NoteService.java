@@ -24,4 +24,6 @@ public interface NoteService {
 	void archievNote(long id, String token);
 
 	List<NoteInformation> getArchiveNote(String token);
+
+	void addColour(Long noteId, String token, String colour);
 }

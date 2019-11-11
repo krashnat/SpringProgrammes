@@ -37,14 +37,14 @@ public class NoteRepository {
 
 	}
 
-	public boolean deleteNote(long id,long userid) {
+	public boolean deleteNote(long id, long userid) {
 		Session session = entityManager.unwrap(Session.class);
-		String hql = "DELETE FROM NoteInformation " + "WHERE id = :id" ;
+		String hql = "DELETE FROM NoteInformation " + "WHERE id = :id";
 		Query query = session.createQuery(hql);
 		query.setParameter("id", id);
 //		query.setParameter("userid", userid);
 		int result = query.executeUpdate();
-		if (result >= 1) { 
+		if (result >= 1) {
 			return true;
 		} else {
 			return false;
@@ -57,7 +57,8 @@ public class NoteRepository {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
 
-		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_trashed=false and is_archieved=false")
+		return session.createQuery(
+				"from NoteInformation where user_Id='" + userid + "'" + " and is_trashed=false and is_archieved=false")
 				.getResultList();
 
 	}
@@ -71,16 +72,31 @@ public class NoteRepository {
 				.getResultList();
 
 	}
-	
 
 	@Transactional
 	public List<NoteInformation> getArchiveNotes(long userid) {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
 
-		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_archieved=true" + " and is_trashed=false")
-				.getResultList();
+		return session.createQuery("from NoteInformation where user_Id='" + userid + "'" + " and is_archieved=true"
+				+ " and is_trashed=false").getResultList();
 
+	}
+
+	
+	public boolean updateColour(long id, long userid, String colour) {
+		Session session = entityManager.unwrap(Session.class);
+		Query query = session.createQuery("update NoteInformation u set u.colour = :colour" + " where u.id = :id");
+
+		query.setParameter("colour", "red");
+		query.setParameter("id", id);
+		int result = query.executeUpdate();
+
+		if (result >= 1) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

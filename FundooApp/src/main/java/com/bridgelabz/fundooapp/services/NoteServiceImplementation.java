@@ -58,6 +58,7 @@ public class NoteServiceImplementation implements NoteService {
 				noteinformation.setArchieved(false);
 				noteinformation.setPinned(false);
 				noteinformation.setTrashed(false);
+				noteinformation.setColour("white");
 				user.getNote().add(noteinformation);
 				noteRepository.save(noteinformation);
 
@@ -216,6 +217,41 @@ public class NoteServiceImplementation implements NoteService {
 		}
 
 	}
+	
+  @Transactional
+	@Override
+	public void addColour(Long noteId, String token, String colour) {
+	
+		Long userid;
+	
+	try {
+		 userid = (long) tokenGenerator.parseJWT(token);
+            System.out.println("user id"+" " +userid);
+		NoteInformation note = noteRepository.findById(noteId);
+		if (note != null) {
+			System.out.println(note.getColour());
+			System.out.println(colour);
+		//noteRepository.updateColour(note.getId(), userid, colour);
+	      note.setColour(colour);
+	      System.out.println(note.getColour());
+	      noteRepository.save(note);
+		} else {
+			throw new UserException("note is not present");
+		}
+
+	}
+	catch(Exception e) {
+		throw new UserException("authentication fale");
+	}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 * NoteInformation updatedNotes =
 	 * noteRepository.findById(information.getId()).map(currentNote -> {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundooapp.model.NoteDto;
@@ -95,6 +96,13 @@ public class NoteController {
 		List<NoteInformation> notes = service.getArchiveNote(token);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("reqired notes are", 200, notes));
+
+	}
+	@PostMapping("/addColour")
+	public ResponseEntity<Response> addColour(@RequestParam("noteId") Long noteId,
+			@RequestParam("colour") String colour, @RequestHeader("token") String token) {
+		service.addColour(noteId, token, colour);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("colour added", 200, colour));
 
 	}
 	

@@ -37,6 +37,8 @@ public class NoteInformation {
 	private boolean isTrashed;
 	private LocalDateTime createdDateAndTime;
 	private LocalDateTime upDateAndTime;
+	private String colour;
+	private LocalDateTime reminder;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "Label_Note", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
