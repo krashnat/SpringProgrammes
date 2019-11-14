@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
+import java.util.List;
+
 import com.bridgelabz.fundooapp.model.LoginInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
 import com.bridgelabz.fundooapp.model.UserDto;
@@ -18,6 +20,8 @@ public interface Services {
 	boolean isUserExist(String email);
 
 	boolean update(PasswordUpdate information, String token);
+
+	List<UserInformation> getUsers();
 
 	
 

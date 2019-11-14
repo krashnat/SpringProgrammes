@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
 import com.bridgelabz.fundooapp.model.NoteUpdation;
+import com.bridgelabz.fundooapp.model.ReminderDto;
 import com.bridgelabz.fundooapp.responses.Response;
 import com.bridgelabz.fundooapp.services.NoteService;
 
@@ -106,6 +107,21 @@ public class NoteController {
 
 	}
 	
+	@PostMapping("/addreminder")
+	public ResponseEntity<Response> addReminder(@RequestParam("noteId") Long noteId,
+			 @RequestHeader("token") String token,@RequestBody ReminderDto reminder) {
+		service.addReminder(noteId, token, reminder);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder added", 200, reminder));
+
+	}
+	
+	@PostMapping("/removereminder")
+	public ResponseEntity<Response> removeReminder(@RequestParam("noteId") Long noteId,
+			 @RequestHeader("token") String token,@RequestBody ReminderDto reminder) {
+		service.removeReminder(noteId, token, reminder);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder added", 200, reminder));
+
+	}
 	
 	
 

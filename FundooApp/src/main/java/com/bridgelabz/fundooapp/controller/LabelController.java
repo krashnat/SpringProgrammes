@@ -38,6 +38,16 @@ public class LabelController {
 		service.createLabel(label, token);
 		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("label created", 200, label));
 	}
+	
+
+	@PostMapping("/createandmap")
+	public ResponseEntity<Response> createLabelAndMap(@RequestBody LabelDto label, @RequestHeader("token") String token,@RequestParam("noteId") Long noteId) {
+		System.out.println("label is"+label.getName());
+		System.out.println("note id is"+noteId);
+
+		service.createLabelAndMap(label, token, noteId);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("label created", 200, label));
+	}
 
 	@PostMapping("/addlabel")
 	public ResponseEntity<Response> addLabel(@RequestParam("labelId") Long labelId,

@@ -1,6 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
 import com.bridgelabz.fundooapp.model.NoteUpdation;
+import com.bridgelabz.fundooapp.model.ReminderDto;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface NoteService {
 	List<NoteInformation> getArchiveNote(String token);
 
 	void addColour(Long noteId, String token, String colour);
+	void addReminder(Long noteId,String token,ReminderDto reminder);
+	void removeReminder(Long noteId,String token,ReminderDto reminder);
+	
 }

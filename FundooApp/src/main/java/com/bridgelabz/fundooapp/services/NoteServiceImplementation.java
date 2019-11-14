@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bridgelabz.fundooapp.exception.UserException;
 import com.bridgelabz.fundooapp.model.NoteUpdation;
+import com.bridgelabz.fundooapp.model.ReminderDto;
 import com.bridgelabz.fundooapp.model.LabelInformation;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
@@ -244,6 +245,62 @@ public class NoteServiceImplementation implements NoteService {
 		throw new UserException("authentication fale");
 	}
 	}
+
+  
+  
+@Transactional
+@Override
+public void addReminder(Long noteId, String token, ReminderDto reminder) {
+	Long userid;
+	
+	try {
+		 userid = (long) tokenGenerator.parseJWT(token);
+            System.out.println("user id"+" " +userid);
+		NoteInformation note = noteRepository.findById(noteId);
+		if (note != null) {
+			System.out.println(note.getReminder());
+			System.out.println(reminder);
+	
+	      note.setReminder(reminder.getReminder());
+	      System.out.println(note.getColour());
+	      noteRepository.save(note);
+		} else {
+			throw new UserException("note is not present");
+		}
+
+	}
+	catch(Exception e) {
+		throw new UserException("authentication fale");
+	}
+	
+}
+
+@Override
+public void removeReminder(Long noteId, String token, ReminderDto reminder) {
+Long userid;
+	
+	try {
+		 userid = (long) tokenGenerator.parseJWT(token);
+            System.out.println("user id"+" " +userid);
+		NoteInformation note = noteRepository.findById(noteId);
+		if (note != null) {
+			System.out.println(note.getReminder());
+			System.out.println(reminder);
+	
+	      note.setReminder(null);
+	      System.out.println(note.getColour());
+	      noteRepository.save(note);
+		} else {
+			throw new UserException("note is not present");
+		}
+
+	}
+	catch(Exception e) {
+		throw new UserException("authentication fale");
+	}
+	
+	
+}
 	
 	
 	

@@ -45,5 +45,12 @@ public class NoteInformation {
 			@JoinColumn(name = "label_id") })
 	 @JsonManagedReference
 	private List<LabelInformation> list;
+	
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "Collaborator_Note", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "id") })
+	 @JsonManagedReference
+	private List<UserInformation> CollabList;
 
 }

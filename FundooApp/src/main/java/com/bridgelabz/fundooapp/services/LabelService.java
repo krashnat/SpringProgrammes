@@ -16,5 +16,7 @@ public interface LabelService {
 	List<LabelInformation> getLabel(String token);
 	List<NoteInformation> getAllNotes(String token,Long labelId);
 	void removeLabel(Long labelId, Long noteId, String token);
+	
+	void createLabelAndMap(LabelDto label, String token, Long noteId);
 
 }

@@ -1,6 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -167,8 +168,13 @@ public class ServiceImplementation implements Services {
 		} catch (Exception e) {
 			throw new UserException("User not exist");
 		}
-		
-		
+	}
+	
+	@Override	
+		public List<UserInformation> getUsers() {
+			 List<UserInformation> users= repository.getUsers();
+			 return users;
+		}
 		
 		
 		
@@ -205,4 +211,4 @@ public class ServiceImplementation implements Services {
 
 	}
 
-}
+

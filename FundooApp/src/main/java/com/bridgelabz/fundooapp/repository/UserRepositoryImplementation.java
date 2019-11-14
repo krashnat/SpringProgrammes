@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooapp.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
@@ -87,5 +89,13 @@ public class UserRepositoryImplementation implements UserRepository {
 		}
 
 	}
+	
+	@Override
+	public List<UserInformation> getUsers() {
+		Session currentsession = entityManager.unwrap(Session.class);
+		List<UserInformation> usersList = currentsession.createQuery("from UserInformation").getResultList();
+		return  usersList;
+	}
+
 
 }
