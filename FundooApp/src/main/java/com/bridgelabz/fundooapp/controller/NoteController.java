@@ -57,6 +57,17 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("note archieced", 200));
 
 	}
+	
+
+	@PostMapping("/pin/{id}")
+	public ResponseEntity<Response> pin(@PathVariable long id, @RequestHeader("token") String token) {
+		System.out.println("inside pin" + id);
+		service.pin(id, token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("note pinned", 200));
+
+	}
+	
+	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Response> delete(@PathVariable long id, @RequestHeader("token") String token) {
 		System.out.println("inside delete controller" + id);
@@ -122,6 +133,19 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder added", 200, reminder));
 
 	}
+	
+	
+	@GetMapping("/search")
+	public ResponseEntity<Response> search(@RequestParam("title") String title,
+			 @RequestHeader("token") String token) {
+		     List<NoteInformation> notes=service.searchByTitle(title);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder added", 200, notes));
+
+	}
+	
+	
+	
+
 	
 	
 

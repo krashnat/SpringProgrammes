@@ -1,5 +1,6 @@
 package com.bridgelabz.fundooapp.services;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bridgelabz.fundooapp.configure.RabbitMQSender;
 import com.bridgelabz.fundooapp.exception.UserException;
 import com.bridgelabz.fundooapp.model.LoginInformation;
+import com.bridgelabz.fundooapp.model.NoteInformation;
 import com.bridgelabz.fundooapp.model.PasswordUpdate;
 import com.bridgelabz.fundooapp.model.UserDto;
 import com.bridgelabz.fundooapp.model.UserInformation;
@@ -49,7 +52,7 @@ public class ServiceImplementation implements Services {
 
 	@Autowired
 	private RabbitMQSender rabbitMQSender;
-	
+
 	@Autowired
 	private ReddisRepository reddisRepository;
 
@@ -68,7 +71,7 @@ public class ServiceImplementation implements Services {
 			userInformation.setPassword(epassword);
 			userInformation.setVerified(false);
 			userInformation = repository.save(userInformation);
-			//reddisRepository.save(userInformation);
+			// reddisRepository.save(userInformation);
 			System.out.println("id" + " " + userInformation.getUserId());
 			System.out.println("token" + " " + generate.jwtToken(userInformation.getUserId()));
 			String mailResponse = response.formMessage("http://localhost:3000/verify",
@@ -77,7 +80,7 @@ public class ServiceImplementation implements Services {
 			mailObject.setEmail("krashnat.cdr869@gmail.com");
 			mailObject.setMessage(mailResponse);
 			mailObject.setSubject("verification");
-			
+
 			rabbitMQSender.send(mailObject);
 			return true;
 
@@ -156,46 +159,48 @@ public class ServiceImplementation implements Services {
 	public boolean isUserExist(String email) {
 		try {
 			UserInformation user = repository.getUser(email);
-			if(user.isVerified() == true) {
-			String mailResponse = response.formMessage("http://localhost:3000/updatePassword",
-					generate.jwtToken(user.getUserId()));
-			MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
-			return true;
-			}
-			else {
+			if (user.isVerified() == true) {
+				String mailResponse = response.formMessage("http://localhost:3000/updatePassword",
+						generate.jwtToken(user.getUserId()));
+				MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification", mailResponse);
+				return true;
+			} else {
 				return false;
 			}
 		} catch (Exception e) {
 			throw new UserException("User not exist");
 		}
 	}
+      
+	@Transactional
+	@Override
+	public List<UserInformation> getUsers() {
+		List<UserInformation> users = repository.getUsers();
+		UserInformation user = users.get(0);
+		List<NoteInformation> note = user.getColaborateNote();
+		// System.out.println(note.get(0).getId());
+		return users;
+	}
+
 	
-	@Override	
-		public List<UserInformation> getUsers() {
-			 List<UserInformation> users= repository.getUsers();
-			 return users;
+	@Transactional
+	@Override
+	public UserInformation getSingleUser(String token) {
+		Long id;
+		try {
+			 id = (long) generate.parseJWT(token);
+		} catch (Exception e) {
+
+			throw new UserException("User not exist");
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification",
-					// mailResponse);
+		UserInformation user=repository.getUserById(id);
+		System.out.println(user.getColaborateNote().toString());
+		return null;
+	}
+
+	// MailServiceProvider.sendEmail("krashnat.cdr869@gmail.com", "verification",
+	// mailResponse);
 
 //		System.out.println("in service"+user.getEmail());
 //		if (user != null) {
@@ -209,6 +214,4 @@ public class ServiceImplementation implements Services {
 //			return false;
 //		}
 
-	}
-
-
+}

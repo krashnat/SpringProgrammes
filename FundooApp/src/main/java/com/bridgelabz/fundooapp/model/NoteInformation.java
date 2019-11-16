@@ -14,6 +14,8 @@ import javax.persistence.ManyToMany;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
@@ -43,14 +45,15 @@ public class NoteInformation {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "Label_Note", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "label_id") })
-	 @JsonManagedReference
+//	 @JsonBackReference
+//	 @JsonIgnore
 	private List<LabelInformation> list;
 	
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "Collaborator_Note", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "id") })
-	 @JsonManagedReference
-	private List<UserInformation> CollabList;
+			@JoinColumn(name = "user_id") })
+//	@JsonBackReference
+     private List<UserInformation> colabUser;
 
 }

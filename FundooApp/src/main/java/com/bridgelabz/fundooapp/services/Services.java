@@ -23,7 +23,7 @@ public interface Services {
 
 	List<UserInformation> getUsers();
 
-	
+	UserInformation getSingleUser(String token);
 
 	
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -120,6 +121,15 @@ public class UserController {
 		List<UserInformation> users=service.getUsers();
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(new Response("password updated successfully", 200, users));
+		
+	}
+	
+	
+	@GetMapping("/getOneUser")
+	public ResponseEntity<Response> getOneUsers(@RequestHeader("token") String token){
+	UserInformation user=service.getSingleUser(token);
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(new Response("user is", 200, user));
 		
 	}
 	
