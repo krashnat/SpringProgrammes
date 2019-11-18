@@ -110,6 +110,14 @@ public class NoteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Response("reqired notes are", 200, notes));
 
 	}
+	
+	@GetMapping("/fetchpinnednote")
+	public ResponseEntity<Response> getPinnedNote(@RequestHeader("token") String token) {
+		List<NoteInformation> notes = service.getAllPinnedNotes(token);
+
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("reqired notes are", 200, notes));
+
+	}
 	@PostMapping("/addColour")
 	public ResponseEntity<Response> addColour(@RequestParam("noteId") Long noteId,
 			@RequestParam("colour") String colour, @RequestHeader("token") String token) {
@@ -128,9 +136,9 @@ public class NoteController {
 	
 	@PostMapping("/removereminder")
 	public ResponseEntity<Response> removeReminder(@RequestParam("noteId") Long noteId,
-			 @RequestHeader("token") String token,@RequestBody ReminderDto reminder) {
-		service.removeReminder(noteId, token, reminder);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder added", 200, reminder));
+			 @RequestHeader("token") String token) {
+		service.removeReminder(noteId, token, null);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("Reminder removed", 200, noteId));
 
 	}
 	

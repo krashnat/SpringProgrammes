@@ -3,6 +3,8 @@ package com.bridgelabz.fundooapp.services;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -346,6 +348,14 @@ public class NoteServiceImplementation implements NoteService {
 
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public List<NoteInformation> searchByTitle(String title) {
 		List<NoteInformation> notes=elasticService.searchbytitle(title);
@@ -357,7 +367,30 @@ public class NoteServiceImplementation implements NoteService {
 		}
 	}
 	
-	
+	@Override
+	@Transactional
+	public List<NoteInformation> getAllPinnedNotes(String token) {
+		List<NoteInformation> allNotes;
+		try {
+			Long userId = (long) tokenGenerator.parseJWT(token);
+			user = repository.getUserById(userId);
+			if (user != null) {
+				System.out.println("user logged in"+user.getUserId());
+				System.out.println("user ");
+				// List<NoteInformation> list=user.getNote();
+				List<NoteInformation> list11 = noteRepository.getNotes(userId);
+			  if(list11!=null) {
+			 allNotes=list11.stream().filter(note -> note.isPinned()==true).collect(Collectors.toList());
+				  return allNotes;
+			  }
+			
+			}
+		} catch (Exception e) {
+			throw new UserException("exception occured");
+		}
+		return null;
+
+	}
 	
 	
 	

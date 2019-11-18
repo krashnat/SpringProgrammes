@@ -33,5 +33,7 @@ public interface NoteService {
 	void pin(long id, String token);
 
 	List<NoteInformation> searchByTitle(String title);
+
+	List<NoteInformation> getAllPinnedNotes(String token);
 	
 }
