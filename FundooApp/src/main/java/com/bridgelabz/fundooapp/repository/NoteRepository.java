@@ -52,13 +52,13 @@ public class NoteRepository {
 	}
 
 	@SuppressWarnings("unchecked")
-
+ 
 	public List<NoteInformation> getNotes(long userid) {
 		System.out.println("in repository");
 		Session session = entityManager.unwrap(Session.class);
 
 		return session.createQuery(
-				"from NoteInformation where user_id='" + userid + "'" + " and is_trashed=false and is_archieved=false")
+				"from NoteInformation where user_id='" + userid + "'" + " and is_trashed=false and is_archieved=false ORDER BY id DESC")
 				.getResultList();
 
 	}

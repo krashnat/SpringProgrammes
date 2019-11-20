@@ -1,30 +1,32 @@
 package com.bridgelabz.fundooapp.reddisrepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.bridgelabz.fundooapp.model.UserInformation;
+import com.bridgelabz.fundooapp.model.NoteInformation;
 
 @Repository
 public class ReddisRepository {
+    private static final String KEY = "notes";
+
+
 	
-//	@Autowired
-//	private RedisTemplate<String, UserInformation> redisTemplate;
-//
-//    private HashOperations<String, Long, UserInformation> hashOperations;
-//
-//
-//    public ReddisRepository(RedisTemplate<String, UserInformation> redisTemplate) {
-//        this.redisTemplate = redisTemplate;
-//
-//        hashOperations = redisTemplate.opsForHash();
-//    }
-//	 
-//	 public void save(UserInformation user) {
-//		 System.out.println("user"+ "  "+user);
-//	        hashOperations.put("USER", user.getUserId(), user);
-//	    }
+	
+	private RedisTemplate<String, Object> redisTemplate;
+
+    private HashOperations<String, Long, Object> hashOperations;
+
+
+    public ReddisRepository(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+
+        hashOperations = redisTemplate.opsForHash();
+    }
+	 
+	 public void save(NoteInformation note) {
+		 System.out.println("note"+ "  "+note);
+	        hashOperations.put("note", note.getId(), note);
+	    }
 
 }

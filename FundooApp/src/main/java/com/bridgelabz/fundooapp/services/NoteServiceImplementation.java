@@ -21,6 +21,7 @@ import com.bridgelabz.fundooapp.model.LabelInformation;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
 import com.bridgelabz.fundooapp.model.UserInformation;
+import com.bridgelabz.fundooapp.reddisrepository.ReddisRepository;
 import com.bridgelabz.fundooapp.repository.NoteRepository;
 import com.bridgelabz.fundooapp.repository.UserRepository;
 import com.bridgelabz.fundooapp.util.JwtGenerator;
@@ -51,6 +52,11 @@ public class NoteServiceImplementation implements NoteService {
 
 	@Autowired
 	private JeddisConnection redisTemplete;
+	
+	@Autowired
+	private ReddisRepository redisRepository;
+	
+	
 
 	@Transactional
 	@Override
@@ -72,19 +78,19 @@ public class NoteServiceImplementation implements NoteService {
 				user.getNote().add(noteinformation);
 				NoteInformation note = noteRepository.save(noteinformation);
 
-				if(note!=null) {
-					final String KEY=user.getEmail();
-					try {	
-						//redisTemplete.redistemplate().opsForValue().set(KEY, information);
-						System.out.println(noteinformation);
-						String check1 = elasticService.CreateNote(noteinformation);
-
-						System.out.println(check1);
-					} 
-					catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+//				if(note!=null) {
+//					final String KEY=user.getEmail();
+//					try {	
+//						//redisTemplete.redistemplate().opsForValue().set(KEY, information);
+//						System.out.println(noteinformation);
+//						String check1 = elasticService.CreateNote(noteinformation);
+//
+//						System.out.println(check1);
+//					} 
+//					catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
 
 			} else {
 				throw new UserException("note is not present with the given id ");
@@ -199,6 +205,8 @@ public class NoteServiceImplementation implements NoteService {
 				System.out.println("user ");
 				// List<NoteInformation> list=user.getNote();
 				List<NoteInformation> list11 = noteRepository.getNotes(userId);
+				redisRepository.save(list11.get(0));
+				
 			List<NoteInformation> collaboratedNotes=	user.getColaborateNote();
 			if(collaboratedNotes!=null) {
 			list11.addAll(collaboratedNotes);

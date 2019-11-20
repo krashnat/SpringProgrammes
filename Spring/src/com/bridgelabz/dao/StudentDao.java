@@ -48,8 +48,8 @@ public class StudentDao {
 			}
 		});
 
-		System.out.println("inside lgoinmethod_:-" + users.get(0));
-		System.out.println("inside lgoinmethod_:-" + users.get(0));
+//		System.out.println("inside lgoinmethod_:-" + users.get(0));
+//		System.out.println("inside lgoinmethod_:-" + users.get(0));
 		if (users.size() > 0) {
 			return 1;
 		} else

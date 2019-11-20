@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<section name="MavenProjectWizardLocationPage">
 		<list key="location">
+			<item value="/home/admin1/SpringProgramme/PostMan"/>
 			<item value="/home/admin1/SpringProgramme/Spring"/>
 			<item value="/home/admin1/SpringProgramme/LoginAndRegistration"/>
 			<item value="/home/admin1/SpringProgramme/StudentLogin"/>
@@ -28,6 +29,8 @@
 	</section>
 	<section name="Maven2ProjectWizardArchifactPage">
 		<list key="package">
+			<item value="com.bridgelabz.DemoRest"/>
+			<item value="com.bridgelabz.PostMan"/>
 			<item value="com.bridgelabz.LoginAndRegister"/>
 			<item value="com.bridgelabz.StudentInformation"/>
 			<item value="com.bridgelabz.springproject"/>
@@ -39,6 +42,8 @@
 			<item value="com.bridgelabz"/>
 		</list>
 		<list key="artifactId">
+			<item value="DemoRest"/>
+			<item value="PostMan"/>
 			<item value="LoginAndRegister"/>
 			<item value="StudentInformation"/>
 			<item value="springproject"/>
@@ -78,6 +83,14 @@
 		</list>
 	</section>
 	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="ciManagementUrl">
+		</list>
+		<list key="ciManagementSystem">
+		</list>
+		<list key="issueManagementSystem">
+		</list>
+		<list key="issueManagementUrl">
+		</list>
 	</section>
 	<section name="org.eclipse.m2e.core.pom.dependencies">
 	</section>
@@ -93,5 +106,11 @@
 		<list key="version">
 			<item value="0.0.1-SNAPSHOT"/>
 		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.ui.internal.dialogs.MavenRepositorySearchDialog">
+		<item key="width" value="480"/>
+		<item key="height" value="584"/>
+		<item key="x" value="479"/>
+		<item key="y" value="27"/>
 	</section>
 </section>
