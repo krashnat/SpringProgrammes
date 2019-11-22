@@ -1,9 +1,7 @@
 package com.bridgelabz.fundooapp.services;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -12,14 +10,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.bridgelabz.fundooapp.configure.JeddisConnection;
 import com.bridgelabz.fundooapp.exception.UserException;
-import com.bridgelabz.fundooapp.model.NoteUpdation;
-import com.bridgelabz.fundooapp.model.ReminderDto;
 import com.bridgelabz.fundooapp.model.LabelInformation;
 import com.bridgelabz.fundooapp.model.NoteDto;
 import com.bridgelabz.fundooapp.model.NoteInformation;
+import com.bridgelabz.fundooapp.model.NoteUpdation;
+import com.bridgelabz.fundooapp.model.ReminderDto;
 import com.bridgelabz.fundooapp.model.UserInformation;
 import com.bridgelabz.fundooapp.reddisrepository.ReddisRepository;
 import com.bridgelabz.fundooapp.repository.NoteRepository;
@@ -124,7 +121,7 @@ public class NoteServiceImplementation implements NoteService {
 				note.setUpDateAndTime(LocalDateTime.now());
 				NoteInformation note1=noteRepository.save(note);
 				if(note!=null) {
-					elasticService.UpdateNote(note1);
+					//elasticService.UpdateNote(note1);
 				}
 			} else {
 				throw new UserException("note is not present");
@@ -205,7 +202,7 @@ public class NoteServiceImplementation implements NoteService {
 				System.out.println("user ");
 				// List<NoteInformation> list=user.getNote();
 				List<NoteInformation> list11 = noteRepository.getNotes(userId);
-				redisRepository.save(list11.get(0));
+				//redisRepository.save(list11.get(0));
 				
 			List<NoteInformation> collaboratedNotes=	user.getColaborateNote();
 			if(collaboratedNotes!=null) {
